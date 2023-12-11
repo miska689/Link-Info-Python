@@ -2,9 +2,22 @@
     Acest modul contine o functie care poate detecta informatiile
     dintrun site si titlul ei
 '''
-
+import configparser # putem citi fileurile cu format .ini
 import requests # conectarea cu pagina web
 from bs4 import BeautifulSoup # manipularea datelor primite in format html, xml
+
+def iniToDict(link: str) -> dict:
+    '''
+        Aceasta functie citeste un fisieri cu format .ini si il converteaza intrun dictionar
+        iniToDict(link: str) -> dict unde linkul este locatia la fisier
+    '''
+    config = configparser.ConfigParser()
+    
+    config.read(link)
+    
+    d = {key:value for (key, value) in zip(config.sections(), [dict(config.items(config.sections()[i])) for i in range(len(config.sections()))])}
+    
+    return d
 
 def getInfoLink(link: str) -> dict:
     '''
@@ -37,7 +50,9 @@ def getInfoLink(link: str) -> dict:
 
 
 if __name__ == "__main__":
-    link = input("Introduceti linkul:")
+    config = iniToDict("config.ini")
+    
+    link = config["path"]["link"]
 
     info = getInfoLink(link)
 
@@ -46,7 +61,7 @@ if __name__ == "__main__":
     print()
     print("Descrierea: ", info['description'])
     print('/////////////////////////////////////////')
-
+    
 
 
 
